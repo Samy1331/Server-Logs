@@ -7,10 +7,10 @@ url 'https://jokedevil.com'
 server_script 'config.lua'
 
 -- Server Scripts
-server_script 'server/server.lua'
+server_script 'server.lua'
 
 --Client Scripts
-client_script 'client/client.lua'
+client_script 'client.lua'
 
 
 file 'postals.json'
