@@ -49,7 +49,6 @@ else
 end
 
 
--- Get exports from server side
 exports('discord', function(message, id, id2, color, channel)
 
 	-- Check if hex or decimal color is used
@@ -92,7 +91,7 @@ exports('discord', function(message, id, id2, color, channel)
     discordLog(_message, _color, channel)
 end)
 
--- Sending message to the All Logs channel and to the channel it has listed
+
 function discordLog(message, color, channel)
   if Config.AllLogs then
 	PerformHttpRequest(Config.webhooks["all"], function(err, text, headers) end, 'POST', json.encode({username = Config.username, embeds = {{["color"] = color, ["author"] = {["name"] = Config.communtiyName,["icon_url"] = Config.communtiyLogo}, ["description"] = "".. message .."",["footer"] = {["text"] = "Corleone - "..os.date("%x %X %p"),["icon_url"] = "https://cdn.discordapp.com/icons/863492133088264262/300ab97a5856772c1768cd041b1d53cf.webp?size=512",},}}, avatar_url = Config.avatar}), { ['Content-Type'] = 'application/json' })
@@ -100,9 +99,7 @@ function discordLog(message, color, channel)
 	PerformHttpRequest(Config.webhooks[channel], function(err, text, headers) end, 'POST', json.encode({username = Config.username, embeds = {{["color"] = color, ["author"] = {["name"] = Config.communtiyName,["icon_url"] = Config.communtiyLogo}, ["description"] = "".. message .."",["footer"] = {["text"] = "Corleone - "..os.date("%x %X %p"),["icon_url"] = "https://cdn.discordapp.com/icons/863492133088264262/300ab97a5856772c1768cd041b1d53cf.webp?size=512",},}}, avatar_url = Config.avatar}), { ['Content-Type'] = 'application/json' })
 end
 
--- Event Handlers
 
--- Send message when Player connects to the server.
 AddEventHandler("playerConnecting", function(name, setReason, deferrals)
 	local ids = ExtractIdentifiers(source)
 	if Config.discordID then if ids.discord ~= "" then _discordID ="\n**Discord ID:** <@" ..ids.discord:gsub("discord:", "")..">" else _discordID = "\n**Discord ID:** N/A" end else _discordID = "" end
@@ -113,7 +110,7 @@ AddEventHandler("playerConnecting", function(name, setReason, deferrals)
 	discordLog('**' .. sanitize(GetPlayerName(source)) .. '** is connecting to the server.'.. _discordID..''.._steamID..''.._steamURL..''.._license..''.._ip..'', joinColor, 'joins')
 end)
 
--- Send message when Player disconnects from the server
+
 AddEventHandler('playerDropped', function(reason)
 	local ids = ExtractIdentifiers(source)
 	local postal = getPlayerLocation(source)
@@ -127,7 +124,7 @@ AddEventHandler('playerDropped', function(reason)
 	discordLog('**' .. sanitize(GetPlayerName(source)) .. '** has left the server. (Reason: ' .. reason .. ')'.._playerID..''.. _postal ..''.. _discordID..''.._steamID..''.._steamURL..''.._license..''.._ip..'', leaveColor, 'leaving')
 end)
 
--- Send message when Player creates a chat message (Does not show commands)
+
 AddEventHandler('chatMessage', function(source, name, msg)
 	local ids = ExtractIdentifiers(source)
 	local postal = getPlayerLocation(source)
@@ -142,7 +139,7 @@ AddEventHandler('chatMessage', function(source, name, msg)
 	discordLog('**' .. sanitize(GetPlayerName(source)) .. '**: ``' .. msg .. '``'.._playerID..''.. _postal ..''.. _discordID..''.._steamID..''.._steamURL..''.._license..''.._ip..'', chatColor, 'chat')
 end)
 
--- Send message when Player died (including reason/killer check) (Not always working)
+
 RegisterServerEvent('playerDied')
 AddEventHandler('playerDied',function(id,player,killer,DeathReason,Weapon)
 	if GetPlayerRoutingBucket(source) ~= 0 then
@@ -180,7 +177,6 @@ AddEventHandler('playerDied',function(id,player,killer,DeathReason,Weapon)
 	end
 end)
 
--- Send message when Player fires a weapon
 RegisterServerEvent('playerShotWeapon')
 AddEventHandler('playerShotWeapon', function(weapon)
 	local ids = ExtractIdentifiers(source)
@@ -197,7 +193,6 @@ AddEventHandler('playerShotWeapon', function(weapon)
     end
 end)
 
--- Getting exports from clientside
 RegisterServerEvent('ClientDiscord')
 AddEventHandler('ClientDiscord', function(message, id, id2, color, channel)
 
@@ -241,12 +236,11 @@ AddEventHandler('ClientDiscord', function(message, id, id2, color, channel)
    discordLog(_message, _color,  channel)
 end)
 
--- Send message when a resource is being stopped
+
 AddEventHandler('onResourceStop', function (resourceName)
     discordLog('**' .. resourceName .. '** has been stopped.', resourceColor, 'resources')
 end)
 
--- Send message when a resource is being started
 AddEventHandler('onResourceStart', function (resourceName)
     Wait(100)
     discordLog('**' .. resourceName .. '** has been started.', resourceColor, 'resources')
